@@ -1,10 +1,17 @@
+import 'dart:io';
+
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:krili/presentation/map_screen.dart';
 
 void main() {
   runApp(
-    const ProviderScope(
-      child: MainApp(),
+    ProviderScope(
+      child: DevicePreview(
+        enabled: Platform.isWindows,
+        builder: (context) => const MainApp(),
+      ),
     ),
   );
 }
@@ -14,8 +21,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      home: const MapScreen(),
     );
   }
 }
