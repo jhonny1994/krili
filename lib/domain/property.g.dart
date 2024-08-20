@@ -17,6 +17,7 @@ _$PropertyImpl _$$PropertyImplFromJson(Map<String, dynamic> json) =>
       longitude: (json['longitude'] as num).toDouble(),
       price: (json['price'] as num).toInt(),
       rooms: (json['rooms'] as num).toInt(),
+      beds: (json['beds'] as num).toInt(),
       available: json['available'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
@@ -31,6 +32,7 @@ Map<String, dynamic> _$$PropertyImplToJson(_$PropertyImpl instance) =>
       'longitude': instance.longitude,
       'price': instance.price,
       'rooms': instance.rooms,
+      'beds': instance.beds,
       'available': instance.available,
       'createdAt': instance.createdAt.toIso8601String(),
     };

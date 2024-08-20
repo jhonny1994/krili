@@ -7,6 +7,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:krili/application/location_notifier.dart';
+import 'package:krili/domain/distance_to_property_model.dart';
 import 'package:krili/domain/floating_bottom_sheet.dart';
 import 'package:krili/domain/property.dart';
 import 'package:latlong2/latlong.dart';
@@ -25,16 +26,6 @@ class _MapScreenState extends ConsumerState<MapScreen>
       AnimatedMapController(vsync: this);
 
   @override
-  void initState() {
-    super.initState();
-    // Initialize the controller with a specific curve
-    AnimatedMapController(
-      vsync: this,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     final currentLocationData = ref.watch(locationProvider);
 
@@ -50,21 +41,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
     );
   }
 
-  Widget _buildMap(LatLng currentLocation) {
-    return FlutterMap(
-      mapController: _animatedMapController.mapController,
-      options: MapOptions(
-        initialCenter: currentLocation,
-        initialZoom: 14,
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.carbodex.krili',
-        ),
-        _buildCurrentLocationLayer(currentLocation),
-        _buildMarkerLayer(context, currentLocation),
-      ],
+  @override
+  void initState() {
+    super.initState();
+    AnimatedMapController(
+      vsync: this,
+      curve: Curves.easeInOut,
     );
   }
 
@@ -78,13 +60,33 @@ class _MapScreenState extends ConsumerState<MapScreen>
     );
   }
 
+  Widget _buildMap(LatLng currentLocation) {
+    return FlutterMap(
+      mapController: _animatedMapController.mapController,
+      options: MapOptions(
+        initialCenter: currentLocation,
+        initialZoom: 14,
+        minZoom: 12,
+        maxZoom: 16,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.carbodex.krili',
+        ),
+        _buildCurrentLocationLayer(currentLocation),
+        _buildMarkerLayer(context, currentLocation),
+      ],
+    );
+  }
+
   Widget _buildMarkerLayer(BuildContext context, LatLng currentLocation) {
     return MarkerLayer(
       markers: dummyProperties.map((Property property) {
         return Marker(
           point: LatLng(property.latitude, property.longitude),
           child: InkWell(
-            onTap: () => _handleMarkerTap(context, property),
+            onTap: () => _handleMarkerTap(context, property, currentLocation),
             child: const Icon(Icons.location_on),
           ),
         );
@@ -92,20 +94,11 @@ class _MapScreenState extends ConsumerState<MapScreen>
     );
   }
 
-  void _handleMarkerTap(BuildContext context, Property property) {
-    _animatedMapController.animateTo(
-      dest: LatLng(property.latitude, property.longitude),
-      offset: Offset(0, -MediaQuery.of(context).size.height * 0.25),
-      zoom: 16,
-    );
-    showFloatingModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) =>
-          _buildPropertyDetailsSheet(context, property),
-    );
-  }
-
-  Widget _buildPropertyDetailsSheet(BuildContext context, Property property) {
+  Widget _buildPropertyDetailsSheet(
+    BuildContext context,
+    Property property,
+    LatLng currentLocation,
+  ) {
     return SingleChildScrollView(
       controller: ModalScrollController.of(context),
       child: Column(
@@ -113,7 +106,35 @@ class _MapScreenState extends ConsumerState<MapScreen>
         children: [
           Text(
             property.name,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const Gap(8),
+          Row(
+            children: [
+              _infoRow(
+                icon: Icons.house,
+                value: property.rooms.toString(),
+              ),
+              _infoRow(
+                icon: Icons.bed,
+                value: property.beds.toString(),
+              ),
+              _infoRow(
+                icon: Icons.location_on,
+                value: '${ref.watch(
+                  distanceToPropertyProvider(
+                    DistanceToProperty(
+                      startLatitude: currentLocation.latitude,
+                      startLongitude: currentLocation.longitude,
+                      endLatitude: property.latitude,
+                      endLongitude: property.longitude,
+                    ),
+                  ),
+                )} Km',
+              ),
+            ],
           ),
           const Gap(8),
           Container(
@@ -124,24 +145,68 @@ class _MapScreenState extends ConsumerState<MapScreen>
               items: property.images
                   .map((e) => CachedNetworkImage(imageUrl: e))
                   .toList(),
-              options: CarouselOptions(
-                autoPlay: true,
-              ),
+              options: CarouselOptions(autoPlay: true),
             ),
           ),
           const Gap(8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${property.price} DA/night',
-                style: Theme.of(context).textTheme.titleLarge,
+                '${property.price} DA/Night',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
+              const Gap(4),
+              const Spacer(),
               FilledButton(
                 onPressed: () {},
                 child: const Text('Book'),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleMarkerTap(
+    BuildContext context,
+    Property property,
+    LatLng currentLocation,
+  ) async {
+    await _animatedMapController.animateTo(
+      dest: LatLng(property.latitude, property.longitude),
+      offset: Offset(0, -MediaQuery.of(context).size.height * 0.25),
+      zoom: 16,
+    );
+    if (context.mounted) {
+      await showFloatingModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) =>
+            _buildPropertyDetailsSheet(context, property, currentLocation),
+      );
+    }
+    await _animatedMapController.animateTo(
+      dest: currentLocation,
+      zoom: 14,
+    );
+  }
+
+  Widget _infoRow({
+    required IconData icon,
+    required String value,
+  }) {
+    return Expanded(
+      child: Row(
+        children: [
+          Icon(icon),
+          const Gap(4),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ],
       ),

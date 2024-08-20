@@ -16,6 +16,7 @@ class Property with _$Property {
     required double longitude,
     required int price,
     required int rooms,
+    required int beds,
     @Default(true) bool available,
     required DateTime createdAt,
   }) = _Property;
@@ -37,6 +38,7 @@ List<Property> dummyProperties = [
     longitude: 5.537962,
     price: 5000,
     rooms: 4,
+    beds: 4,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -51,6 +53,7 @@ List<Property> dummyProperties = [
     longitude: 5.527962,
     price: 3000,
     rooms: 3,
+    beds: 3,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -65,6 +68,7 @@ List<Property> dummyProperties = [
     longitude: 5.527962,
     price: 4000,
     rooms: 2,
+    beds: 2,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -79,6 +83,7 @@ List<Property> dummyProperties = [
     longitude: 5.537962,
     price: 10000,
     rooms: 5,
+    beds: 5,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -93,6 +98,7 @@ List<Property> dummyProperties = [
     longitude: 5.527962,
     price: 6000,
     rooms: 3,
+    beds: 3,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -107,6 +113,7 @@ List<Property> dummyProperties = [
     longitude: 5.537962,
     price: 7000,
     rooms: 4,
+    beds: 4,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -121,6 +128,7 @@ List<Property> dummyProperties = [
     longitude: 5.527962,
     price: 8000,
     rooms: 6,
+    beds: 6,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -135,6 +143,7 @@ List<Property> dummyProperties = [
     longitude: 5.537962,
     price: 4000,
     rooms: 2,
+    beds: 2,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -149,6 +158,7 @@ List<Property> dummyProperties = [
     longitude: 5.527962,
     price: 5000,
     rooms: 3,
+    beds: 3,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -163,6 +173,7 @@ List<Property> dummyProperties = [
     longitude: 5.547962,
     price: 4000,
     rooms: 2,
+    beds: 2,
     createdAt: DateTime.parse('2024-08-18'),
   ),
   Property(
@@ -177,6 +188,7 @@ List<Property> dummyProperties = [
     longitude: 5.537962,
     price: 9000,
     rooms: 7,
+    beds: 7,
     createdAt: DateTime.parse('2024-08-18'),
   ),
 ];

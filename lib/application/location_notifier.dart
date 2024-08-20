@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:krili/domain/distance_to_property_model.dart';
 import 'package:latlong2/latlong.dart';
 
 final locationProvider = FutureProvider<LatLng>((ref) async {
@@ -29,3 +30,14 @@ final locationProvider = FutureProvider<LatLng>((ref) async {
 
   return LatLng(position.latitude, position.longitude);
 });
+
+final distanceToPropertyProvider = Provider.family<String, DistanceToProperty>(
+  (ref, distance) => (Geolocator.distanceBetween(
+            distance.startLatitude,
+            distance.startLongitude,
+            distance.endLatitude,
+            distance.endLongitude,
+          ) /
+          1000)
+      .toStringAsFixed(2),
+);

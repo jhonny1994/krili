@@ -28,6 +28,7 @@ mixin _$Property {
   double get longitude => throw _privateConstructorUsedError;
   int get price => throw _privateConstructorUsedError;
   int get rooms => throw _privateConstructorUsedError;
+  int get beds => throw _privateConstructorUsedError;
   bool get available => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -55,6 +56,7 @@ abstract class $PropertyCopyWith<$Res> {
       double longitude,
       int price,
       int rooms,
+      int beds,
       bool available,
       DateTime createdAt});
 }
@@ -82,6 +84,7 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
     Object? longitude = null,
     Object? price = null,
     Object? rooms = null,
+    Object? beds = null,
     Object? available = null,
     Object? createdAt = null,
   }) {
@@ -118,6 +121,10 @@ class _$PropertyCopyWithImpl<$Res, $Val extends Property>
           ? _value.rooms
           : rooms // ignore: cast_nullable_to_non_nullable
               as int,
+      beds: null == beds
+          ? _value.beds
+          : beds // ignore: cast_nullable_to_non_nullable
+              as int,
       available: null == available
           ? _value.available
           : available // ignore: cast_nullable_to_non_nullable
@@ -147,6 +154,7 @@ abstract class _$$PropertyImplCopyWith<$Res>
       double longitude,
       int price,
       int rooms,
+      int beds,
       bool available,
       DateTime createdAt});
 }
@@ -172,6 +180,7 @@ class __$$PropertyImplCopyWithImpl<$Res>
     Object? longitude = null,
     Object? price = null,
     Object? rooms = null,
+    Object? beds = null,
     Object? available = null,
     Object? createdAt = null,
   }) {
@@ -208,6 +217,10 @@ class __$$PropertyImplCopyWithImpl<$Res>
           ? _value.rooms
           : rooms // ignore: cast_nullable_to_non_nullable
               as int,
+      beds: null == beds
+          ? _value.beds
+          : beds // ignore: cast_nullable_to_non_nullable
+              as int,
       available: null == available
           ? _value.available
           : available // ignore: cast_nullable_to_non_nullable
@@ -232,6 +245,7 @@ class _$PropertyImpl implements _Property {
       required this.longitude,
       required this.price,
       required this.rooms,
+      required this.beds,
       this.available = true,
       required this.createdAt})
       : _images = images;
@@ -262,6 +276,8 @@ class _$PropertyImpl implements _Property {
   @override
   final int rooms;
   @override
+  final int beds;
+  @override
   @JsonKey()
   final bool available;
   @override
@@ -269,7 +285,7 @@ class _$PropertyImpl implements _Property {
 
   @override
   String toString() {
-    return 'Property(id: $id, ownerId: $ownerId, name: $name, images: $images, latitude: $latitude, longitude: $longitude, price: $price, rooms: $rooms, available: $available, createdAt: $createdAt)';
+    return 'Property(id: $id, ownerId: $ownerId, name: $name, images: $images, latitude: $latitude, longitude: $longitude, price: $price, rooms: $rooms, beds: $beds, available: $available, createdAt: $createdAt)';
   }
 
   @override
@@ -287,6 +303,7 @@ class _$PropertyImpl implements _Property {
                 other.longitude == longitude) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.rooms, rooms) || other.rooms == rooms) &&
+            (identical(other.beds, beds) || other.beds == beds) &&
             (identical(other.available, available) ||
                 other.available == available) &&
             (identical(other.createdAt, createdAt) ||
@@ -305,6 +322,7 @@ class _$PropertyImpl implements _Property {
       longitude,
       price,
       rooms,
+      beds,
       available,
       createdAt);
 
@@ -334,6 +352,7 @@ abstract class _Property implements Property {
       required final double longitude,
       required final int price,
       required final int rooms,
+      required final int beds,
       final bool available,
       required final DateTime createdAt}) = _$PropertyImpl;
 
@@ -356,6 +375,8 @@ abstract class _Property implements Property {
   int get price;
   @override
   int get rooms;
+  @override
+  int get beds;
   @override
   bool get available;
   @override
